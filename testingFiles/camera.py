@@ -1,11 +1,12 @@
 
 # import the opencv library 
 import cv2
-from matplotlib import pyplot as plot
+from PIL import Image, ImageFilter, ImageOps
+import numpy as np
 
 
 # define a video capture object 
-vid = cv2.VideoCapture(1) 
+vid = cv2.VideoCapture(0) 
 
 while(True): 
 
@@ -28,13 +29,29 @@ while(True):
 
 
     # Blur the image for better edge detection
-    frameBlur = cv2.GaussianBlur(frameGray, (1,1), 0) 
+    frameBlur = cv2.GaussianBlur(frameGray, ksize=(5,5), sigmaX=0)
+    med_val = np.median(frameGray)
+    lower = int(max(0 ,0.7*med_val))
+    upper = int(min(255,1.3*med_val))
+    #pillowBlur = Image.fromarray(frameBlur)
+    #pillowEnhance = pillowBlur.filter(ImageFilter.EDGE_ENHANCE)
+    #frameBlurEnhance = np.asarray(pillowEnhance)
+
 
     # Canny Edge Detection
     frameEdges = cv2.Canny(image=frameBlur, threshold1=40, threshold2=175) # Canny Edge Detection
 
+    # pillow filtering and inversion
+    pillowEdges = Image.fromarray(frameEdges)
+    imgSmall = pillowEdges.resize((20,20), resample=Image.Resampling.BILINEAR)
+    pillowResult = imgSmall.resize(pillowEdges.size, Image.Resampling.NEAREST)
+    pillowResult = ImageOps.invert(pillowResult)
+
+    # back to array type for cv2
+    frameEdgesPixelate = np.asarray(pillowResult)
+
     # Display Canny Edge Detection Image
-    cv2.imshow('Edges', frameEdges)
+    cv2.imshow('Edges Pixelated', frameEdgesPixelate)
 
     # Display the faces
     cv2.imshow('Faces', frame)
