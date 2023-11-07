@@ -1,6 +1,6 @@
 import cv2
- # Read the original image
-img = cv2.imread('handSmall.jpg') 
+ # Read the original image (windows path formatting)
+img = cv2.imread('samplePictures\handSmall.jpg') 
 # Display original image
 cv2.imshow('Original', img)
 cv2.waitKey(0)
