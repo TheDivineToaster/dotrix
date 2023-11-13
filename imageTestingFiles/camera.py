@@ -45,7 +45,7 @@ while(True):
 
 
     # Canny Edge Detection
-    frameEdges = cv2.Canny(image=frameBlur, threshold1=40, threshold2=175) # Canny Edge Detection
+    frameEdges = cv2.Canny(image=frameBlur, threshold1=lower, threshold2=upper) # Canny Edge Detection
 
     # pillow filtering
     pillowEdges = Image.fromarray(frameEdges)
