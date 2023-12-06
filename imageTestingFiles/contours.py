@@ -12,7 +12,7 @@ while True:
     img_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Threshold function, param is tunable
-    threshold_param = 150
+    threshold_param = 100
     ret, thresh = cv2.threshold(img_gray, threshold_param, 255, cv2.THRESH_BINARY)
 
     # Detect contours
@@ -60,6 +60,15 @@ while True:
         print("Filling in contours took " + str(total_time) + " seconds.")
         # Write image of longest contour filled in
         cv2.imwrite("pointPolygonTest.png", max_contour_image)
+        
+        # Cropping image to a square
+        w1 = int(((frame.shape[1] / 2) - (frame.shape[0] / 2)))
+        w2 = int(((frame.shape[1] / 2) + (frame.shape[0] / 2)))
+        cropped_contour_image = max_contour_image[0:frame.shape[0], w1: w2]
+        
+        # Downscaling image to 25x25, writing downscaled image
+        downscaled_image = cv2.resize(cropped_contour_image, dsize=(25,25), interpolation=cv2.INTER_LINEAR)
+        cv2.imwrite("downscaled_image.png", downscaled_image)
         break
 
 # After the loop release the cap object 
