@@ -34,14 +34,18 @@ def mainloop():
 
 def parsedata(data):
     data_split = data.split(' ')
-    if "Vert:" in data_split:
+    if data_split[0] == "Vert:":
         y_pot = int(data_split[1])
-    elif "Horiz:" in data_split:
+        return
+    elif data_split[0] == "Horiz:":
         x_pot = int(data_split[1])
-    elif "Speed:" in data_split:
+        return
+    elif data_split[0] == "Speed:":
         speed_pot = int(data_split[1])
+        return
     else:
         print("reconsider your life")
+        return
 
 def turtle():
     x = x_pot - 512     # cut in half so values are between -512 and 512
