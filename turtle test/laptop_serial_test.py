@@ -3,15 +3,21 @@ from datetime import datetime, timedelta
 import serial
 from turtle import * # https://docs.python.org/3/library/turtle.html
 
+# === setup Serial port readings ===
 COM_PORT = 'COM6'
 BAUDRATE = 9600
 SER_TIMEOUT = 0.04
 
+ser = serial.Serial(port=COM_PORT, baudrate=BAUDRATE, timeout=SER_TIMEOUT)
+
+# === setup turtle screen ===
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
 
-ser = serial.Serial(port=COM_PORT, baudrate=BAUDRATE, timeout=SER_TIMEOUT)
+screen = Screen()
+screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
 
+# === setup Serial port variables and how often we call turtle and print variables to terminal ===
 x_pot = 512   # pots can have values between 0 and 1023
 y_pot = 512
 speed_pot = 512
@@ -23,6 +29,7 @@ turtle_freq = 0.1   # how often do we call turtle()?
 print_time = datetime.now()
 print_freq = 1.25   # how often do you want to print the outputs?
 
+# === main loop takes input from serial port ===
 def mainloop():
     turtle_x = 0
     turtle_y = 0
@@ -83,23 +90,37 @@ def setpots(data_split):
         print("reconsider life")
     return
 
+def set_degrees(x, y):
+    if x == 0:
+        if y == 0:
+            return 0
+        else:
+            angle = 90 if y > 0 else 270
+            return angle
+    elif y == 0:
+        angle = 0 if x > 0 else 180
+        return angle
+    
+    angle = math.degrees(math.atan(y / x))
+
+    if x < 0:   # atan returns q4 when should be q2 and q1 when should be q3
+        return angle + 180
+    elif y > 0: # correctly in q1
+        return angle
+    else:       # returns q4, just add 360 so it's positive
+        return angle + 360
+
 
 def turtle():
     x = x_pot - 512     # cut in half so values are between -512 and 512
     y = y_pot - 512     # use temp variables so they don't get modified by serial (idk if it's an async process)
 
-    q1 = True
-    if (x < 0):
-        q1 = False
 
     distance = speed_pot * 0.005
 
-    angle = 0.0
-    if y != 0:
-        angle = math.degrees(math.atan(x / y))
-
-    if (q1):
-        angle += 180
+    angle = set_degrees(x, y)
+    if x == 0 and y == 0:
+        distance = 0
 
     setheading(angle)
     forward(distance)
@@ -111,10 +132,4 @@ def turtle():
     return x, y
 
 
-screen = Screen()
-screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
-screen.bgcolor('#1e1e1e')
-
-# turtle = Turtle()
-# turtle.done()
 mainloop()
