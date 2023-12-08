@@ -12,6 +12,7 @@ ser = serial.Serial(port=COM_PORT, baudrate=BAUDRATE, timeout=SER_TIMEOUT)
 x_pot = 512   # pots can have values between 0 and 1023
 y_pot = 512
 speed_pot = 512
+pot_set = [False, False, False]
 
 turtle_time = datetime.now()
 turtle_freq = 0.1   # how often do we call turtle()?
@@ -29,7 +30,7 @@ def mainloop():
             setpots(data_split)
             
             global turtle_time
-            if datetime.now() > turtle_time + timedelta(seconds=turtle_freq):
+            if all(pot_set) and datetime.now() > turtle_time + timedelta(seconds=turtle_freq):
                 turtle_time = datetime.now()
                 turtle()
                 ser.readlines() # dequeue all serial outputs
@@ -43,10 +44,12 @@ def mainloop():
                 print(" %-25s %-25s %-25s" % (x_print, y_print, speed_print))
 
 def setpots(data_split):
+    global pot_set
     if data_split[0] == "Horiz:":
         try:
             global x_pot
             x_pot = int(data_split[1])
+            pot_set[0] = True
             return
         except:
             temp = 4 # do nothing
@@ -54,6 +57,7 @@ def setpots(data_split):
         try:
             global y_pot
             y_pot = int(data_split[1])
+            pot_set[1] = True
             return
         except:
             temp = 4
@@ -61,6 +65,7 @@ def setpots(data_split):
         try:
             global speed_pot
             speed_pot = int(data_split[1])
+            pot_set[2] = True
             return
         except:
             temp = 4
@@ -79,6 +84,7 @@ def turtle():
 
     distance = speed_pot * 0.00125
 
+    angle = 0
     if y != 0:
         angle = math.degrees(math.atan(x / y))
 
@@ -88,7 +94,6 @@ def turtle():
     setheading(angle)
     forward(distance)
 
-    return
 
 
 mainloop()
