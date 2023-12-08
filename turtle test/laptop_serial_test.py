@@ -7,6 +7,9 @@ COM_PORT = 'COM6'
 BAUDRATE = 9600
 SER_TIMEOUT = 0.04
 
+SCREEN_WIDTH = 500
+SCREEN_HEIGHT = 500
+
 ser = serial.Serial(port=COM_PORT, baudrate=BAUDRATE, timeout=SER_TIMEOUT)
 
 x_pot = 512   # pots can have values between 0 and 1023
@@ -18,9 +21,11 @@ turtle_time = datetime.now()
 turtle_freq = 0.1   # how often do we call turtle()?
 
 print_time = datetime.now()
-print_freq = 0.75   # how often do you want to print the outputs?
+print_freq = 1.25   # how often do you want to print the outputs?
 
 def mainloop():
+    turtle_x = 0
+    turtle_y = 0
     while True:
         read_serial = ser.readline()
         data = read_serial.decode().strip()
@@ -35,16 +40,18 @@ def mainloop():
                 for elem in pot_set:
                     elem = False
                 turtle_time = datetime.now()
-                turtle()
+                turtle_x, turtle_y = turtle()
                 # ser.readlines() # dequeue all serial outputs
 
             global print_time
             if datetime.now() > print_time + timedelta(seconds=print_freq):
-                print_now = datetime.now()
+                print_time = datetime.now()
                 x_print = "Horiz: " + str(x_pot)
                 y_print = "Vert: " + str(y_pot)
                 speed_print = "Speed: " + str(speed_pot)
-                print(" %-25s %-25s %-25s" % (x_print, y_print, speed_print))
+                turt_x = "Turtle X: " + str(round(turtle_x, 2))
+                turt_y = "Turtle Y: " + str(round(turtle_y, 2))
+                print(" %-25s %-25s %-25s %-25s %-25s" % (x_print, y_print, speed_print, turt_x, turt_y))
 
 def setpots(data_split):
     global pot_set
@@ -78,7 +85,6 @@ def setpots(data_split):
 
 
 def turtle():
-    print("turtle")
     x = x_pot - 512     # cut in half so values are between -512 and 512
     y = y_pot - 512     # use temp variables so they don't get modified by serial (idk if it's an async process)
 
@@ -88,7 +94,7 @@ def turtle():
 
     distance = speed_pot * 0.005
 
-    angle = 0
+    angle = 0.0
     if y != 0:
         angle = math.degrees(math.atan(x / y))
 
@@ -98,6 +104,17 @@ def turtle():
     setheading(angle)
     forward(distance)
 
+    x,y = position() # make sure turtle is within bounds
+    if not -SCREEN_WIDTH / 2 < x < SCREEN_WIDTH / 2 or not -SCREEN_HEIGHT / 2 < y < SCREEN_HEIGHT / 2:
+        undo()  # undo error
+
+    return x, y
 
 
+screen = Screen()
+screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
+screen.bgcolor('#1e1e1e')
+
+# turtle = Turtle()
+# turtle.done()
 mainloop()
