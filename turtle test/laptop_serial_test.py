@@ -2,6 +2,7 @@ import math
 from datetime import datetime, timedelta
 import serial
 from turtle import * # https://docs.python.org/3/library/turtle.html
+import keyboard_input
 
 # === setup Serial port readings ===
 COM_PORT = 'COM6'
@@ -11,8 +12,8 @@ SER_TIMEOUT = 0.04
 ser = serial.Serial(port=COM_PORT, baudrate=BAUDRATE, timeout=SER_TIMEOUT)
 
 # === setup turtle screen ===
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 700
 
 screen = Screen()
 screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -33,32 +34,38 @@ print_freq = 1.25   # how often do you want to print the outputs?
 def mainloop():
     turtle_x = 0
     turtle_y = 0
-    while True:
-        read_serial = ser.readline()
-        data = read_serial.decode().strip()
-        
-        if data:
-            data_split = data.split(' ')
-            setpots(data_split)
-            
-            global turtle_time
-            global pot_set
-            if all(pot_set) and datetime.now() > turtle_time + timedelta(seconds=turtle_freq):
-                for elem in pot_set:
-                    elem = False
-                turtle_time = datetime.now()
-                turtle_x, turtle_y = turtle()
-                # ser.readlines() # dequeue all serial outputs
+    with keyboard_input.KeyPoller() as keyPoller:
+        while True:
+            c = keyPoller.poll()
+            if not c is None:
+                print(c)
+                keyboardinput(c)
 
-            global print_time
-            if datetime.now() > print_time + timedelta(seconds=print_freq):
-                print_time = datetime.now()
-                x_print = "Horiz: " + str(x_pot)
-                y_print = "Vert: " + str(y_pot)
-                speed_print = "Speed: " + str(speed_pot)
-                turt_x = "Turtle X: " + str(round(turtle_x, 2))
-                turt_y = "Turtle Y: " + str(round(turtle_y, 2))
-                print(" %-25s %-25s %-25s %-25s %-25s" % (x_print, y_print, speed_print, turt_x, turt_y))
+            read_serial = ser.readline()
+            data = read_serial.decode().strip()
+            
+            if data:
+                data_split = data.split(' ')
+                setpots(data_split)
+                
+                global turtle_time
+                global pot_set
+                if all(pot_set) and datetime.now() > turtle_time + timedelta(seconds=turtle_freq):
+                    for elem in pot_set:
+                        elem = False
+                    turtle_time = datetime.now()
+                    turtle_x, turtle_y = turtle()
+                    # ser.readlines() # dequeue all serial outputs
+
+                global print_time
+                if datetime.now() > print_time + timedelta(seconds=print_freq):
+                    print_time = datetime.now()
+                    x_print = "Horiz: " + str(x_pot)
+                    y_print = "Vert: " + str(y_pot)
+                    speed_print = "Speed: " + str(speed_pot)
+                    turt_x = "Turtle X: " + str(round(turtle_x, 2))
+                    turt_y = "Turtle Y: " + str(round(turtle_y, 2))
+                    print(" %-25s %-25s %-25s %-25s %-25s" % (x_print, y_print, speed_print, turt_x, turt_y))
 
 def setpots(data_split):
     global pot_set
@@ -89,6 +96,20 @@ def setpots(data_split):
     else:
         print("reconsider life")
     return
+
+def keyboardinput(s):
+    s = s.lower()
+    if s == "c":
+        clearscreen()   # clear screen but do not move turtle
+    elif s == "r":
+        clearscreen()   # reset both screen and turtle position
+        home()
+    elif s == "d":
+        if isdown():    # toggle turtle up or down
+            up()
+        else:
+            down()
+
 
 def set_degrees(x, y):
     if x == 0:
