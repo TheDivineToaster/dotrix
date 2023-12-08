@@ -30,10 +30,13 @@ def mainloop():
             setpots(data_split)
             
             global turtle_time
+            global pot_set
             if all(pot_set) and datetime.now() > turtle_time + timedelta(seconds=turtle_freq):
+                for elem in pot_set:
+                    elem = False
                 turtle_time = datetime.now()
                 turtle()
-                ser.readlines() # dequeue all serial outputs
+                # ser.readlines() # dequeue all serial outputs
 
             global print_time
             if datetime.now() > print_time + timedelta(seconds=print_freq):
@@ -75,6 +78,7 @@ def setpots(data_split):
 
 
 def turtle():
+    print("turtle")
     x = x_pot - 512     # cut in half so values are between -512 and 512
     y = y_pot - 512     # use temp variables so they don't get modified by serial (idk if it's an async process)
 
@@ -82,7 +86,7 @@ def turtle():
     if (x < 0):
         q1 = False
 
-    distance = speed_pot * 0.00125
+    distance = speed_pot * 0.005
 
     angle = 0
     if y != 0:
