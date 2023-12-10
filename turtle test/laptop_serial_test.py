@@ -12,8 +12,8 @@ SER_TIMEOUT = 0.04
 ser = serial.Serial(port=COM_PORT, baudrate=BAUDRATE, timeout=SER_TIMEOUT)
 
 # === setup turtle screen ===
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 700
+SCREEN_WIDTH = 1500
+SCREEN_HEIGHT = 800
 
 screen = Screen()
 screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -29,6 +29,8 @@ turtle_freq = 0.1   # how often do we call turtle()?
 
 print_time = datetime.now()
 print_freq = 1.25   # how often do you want to print the outputs?
+
+last_pendown = datetime.now()
 
 # === main loop takes input from serial port ===
 def mainloop():
@@ -103,10 +105,15 @@ def keyboardinput():
         clearscreen()
         home()
     elif keyboard.is_pressed('d'):   # toggle turtle up or down
-        if isdown():
-            up()
-        else:
-            down()
+        global last_pendown
+        if datetime.now() > last_pendown + timedelta(seconds=0.15):
+            last_pendown = datetime.now()
+            if isdown():
+                up()
+            else:
+                down()
+    elif keyboard.is_pressed('q'):
+        bye()
     return
 
 
@@ -136,7 +143,7 @@ def turtle():
     y = y_pot - 512     # use temp variables so they don't get modified by serial (idk if it's an async process)
 
 
-    distance = speed_pot * 0.005
+    distance = speed_pot * 0.0075
 
     angle = set_degrees(x, y)
     if x == 0 and y == 0:
