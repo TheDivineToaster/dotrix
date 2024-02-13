@@ -13,7 +13,7 @@ pygame.init()
 # Constants
 WIDTH, HEIGHT = 123, 48 # number of "LEDs" on the screen
 pixels_per_led = 10
-FPS = 60    # move to outside constants, as fps is more of a step function, which will be dependent on what's running
+FPS = 60    # base fps value, each game should have their own
 
 # Colors _currently unused_
 BLACK = (0, 0, 0)
@@ -29,12 +29,15 @@ screen = pygame.surfarray.make_surface(grid) # default screen
 
 # Choose which sim we use
 game_select = np.random.randint(0,1) # inclusive
-game_select = 0 # hard set to test rock_paper_scissors
+game_select = 1 # hard set to test rock_paper_scissors
 if (game_select == 0):
     game = RockPaperScissors(WIDTH, HEIGHT, 3) # grid size and number of colors
     FPS = 10
+elif (game_select == 1):
+    game = FluidSim(WIDTH, HEIGHT)
+    FPS = 60
 
-# Main loop
+# ---- Main loop ----
 clock = pygame.time.Clock()
 running = True
 
@@ -51,7 +54,7 @@ while running:
 
     # Cap the frame rate
     clock.tick(FPS)
-    #print(clock.get_fps())
+    print(clock.get_fps())
 
 # Quit Pygame
 pygame.quit()
