@@ -11,7 +11,7 @@ pygame.init()
 # Constants
 WIDTH, HEIGHT = 123, 48 # number of "LEDs" on the screen
 pixels_per_led = 10
-FPS = 60
+FPS = 60    # move to outside constants, as fps is more of a step function, which will be dependent on what's running
 
 # Colors
 BLACK = (0, 0, 0)
@@ -22,7 +22,8 @@ screen = pygame.display.set_mode((WIDTH * pixels_per_led, HEIGHT * pixels_per_le
 pygame.display.set_caption("Fluid Simulation")
 
 # Initialize grid
-density = np.zeros((WIDTH, HEIGHT, 3), dtype=np.float32)
+grid = np.zeros((WIDTH, HEIGHT, 3))
+screen = pygame.surfarray.make_surface(grid) # default screen
 
 # Main loop
 clock = pygame.time.Clock()
@@ -33,22 +34,15 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Simulate fluid dynamics (simple random movement)
-    density += 0.01 * np.random.randn(WIDTH, HEIGHT, 3)
-
-    # Clamp values to [0, 1]
-    density = np.clip(density, 0, 1)
-
-    # Map density to color and draw on the screen
-    pixels = (density * 255).astype(np.uint8)
-    surface = pygame.surfarray.make_surface(pixels)
-    screen.blit(pygame.transform.scale(surface, (WIDTH * pixels_per_led, HEIGHT * pixels_per_led)), (0, 0))
+    
+    screen.blit(pygame.transform.scale(screen, (WIDTH * pixels_per_led, HEIGHT * pixels_per_led)), (0, 0))
 
     # Update the display
     pygame.display.flip()
 
     # Cap the frame rate
     clock.tick(FPS)
+    print(clock.get_fps())
 
 # Quit Pygame
 pygame.quit()
