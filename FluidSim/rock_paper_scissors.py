@@ -48,15 +48,20 @@ class RockPaperScissors():
         new_board = self.board.copy() # save board
         for x in range(len(self.board)):
             for y in range(len(self.board[x])):
-                # here's the fucky bits
+                
+                # gets the board piece, a dictionary with {"color": <colorhere>, "neighbors": [<neighbor_coords>, <neighbor_coords>]}
                 board_piece = self.board[x][y]
                 curr_state = board_piece['color']
                 neighbors = board_piece['neighbors']
+
+                # appends a list of neighbors to neighboring colors
                 neighboring_colors = []
                 for neighbor in neighbors:
                     neighboring_colors.append(self.board[x + neighbor[0]][y + neighbor[1]]['color']) # should grab the color from the neighboring cell
 
                 # the following two lines found online at https://stackoverflow.com/questions/1518522/find-the-most-common-element-in-a-list
+                # Fetches the most common color from the list of neighbors, gets the first element from the list of tuples and then gets the second
+                # from the list of tuples, which is the count
                 curr_state = Counter(neighboring_colors).most_common(1)[0][0]
 
                 # set new board
