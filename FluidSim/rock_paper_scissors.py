@@ -36,9 +36,9 @@ class RockPaperScissors():
 
                 # find possible neighbors
                 neighbors = []
-                for elem in possible_neighbors:
-                    if x + elem[0] > 0 and x + elem[0] < self.width and y + elem[1] > 0 and y + elem[1] < self.height:
-                        neighbors.append(elem)
+                for possible_neighbor in possible_neighbors:
+                    if x + possible_neighbor[0] > 0 and x + possible_neighbor[0] < self.width and y + possible_neighbor[1] > 0 and y + possible_neighbor[1] < self.height:
+                        neighbors.append(possible_neighbor)
                 board[x][y] = {'color': xy_color, 'neighbors': neighbors}
         return board
 
@@ -52,13 +52,12 @@ class RockPaperScissors():
                 board_piece = self.board[x][y]
                 curr_state = board_piece['color']
                 neighbors = board_piece['neighbors']
-                states = []
-                for elem in neighbors:
-                    states.append(self.board[x + elem[0]][y + elem[1]]['color']) # should grab the color from the neighboring cell
+                neighboring_colors = []
+                for neighbor in neighbors:
+                    neighboring_colors.append(self.board[x + neighbor[0]][y + neighbor[1]]['color']) # should grab the color from the neighboring cell
 
                 # the following two lines found online at https://stackoverflow.com/questions/1518522/find-the-most-common-element-in-a-list
-                counter = Counter(states)
-                curr_state = counter.most_common(1)[0][0]
+                curr_state = Counter(neighboring_colors).most_common(1)[0][0]
 
                 # set new board
                 new_board[x][y]['color'] = curr_state
