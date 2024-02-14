@@ -12,7 +12,7 @@ model = YOLO('./train/weights/best.pt')
 vid = cv2.VideoCapture(0)
 
 # modify the framerate if you need a want
-frame_rate = 5
+frame_rate = 15
 
 prev = 0
 while True:
