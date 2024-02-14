@@ -32,7 +32,6 @@ class RockPaperScissors():
         for x in range(self.width):
             for y in range(self.height):
                 xy_color = self.colors[random.randint(0, self.num_colors - 1)]
-                print(xy_color)
 
                 # find possible neighbors
                 neighbors = []
@@ -63,7 +62,7 @@ class RockPaperScissors():
                 new_board[x][y]['color'] = curr_state
 
                 # set screen
-                self.screen[x][y] = self.get_color(curr_state)
+                self.screen[x][y] = curr_state
         self.board = new_board
         return pygame.surfarray.make_surface(self.screen)
 
