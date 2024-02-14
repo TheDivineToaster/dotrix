@@ -29,10 +29,10 @@ screen = pygame.surfarray.make_surface(grid) # default screen
 
 # Choose which sim we use
 game_select = np.random.randint(0,1) # inclusive
-game_select = 1 # hard set to test rock_paper_scissors
+game_select = 0 # hard set to test rock_paper_scissors
 if (game_select == 0):
-    game = RockPaperScissors(WIDTH, HEIGHT, 3) # grid size and number of colors
-    FPS = 10
+    game = RockPaperScissors(WIDTH, HEIGHT, 4) # grid size and number of colors
+    FPS = 2
 elif (game_select == 1):
     game = FluidSim(WIDTH, HEIGHT)
     FPS = 60
