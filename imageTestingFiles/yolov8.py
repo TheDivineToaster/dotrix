@@ -33,8 +33,20 @@ while True:
             # Visualize the results on the frame
             annotated_frame = results[0].plot()
 
+            # for result boxes find the x and y positions of them
+            # then add a circle centered on the box to the frame_circle, a copy of the frame
+            frame_circles = frame.copy()
+            boxes = results[0].boxes
+            for box in boxes:
+                x_pos = int((box.xyxy[0][0] + box.xyxy[0][2]) / 2)
+                y_pos = int((box.xyxy[0][1] + box.xyxy[0][3]) / 2)
+                frame_circles = cv2.circle(frame_circles, (x_pos,y_pos), radius=0, color=(255, 255, 255), thickness=4)
+
             # Display the annotated frame
             cv2.imshow("YOLOv8 Inference", annotated_frame)
+
+            # Display the center of the boxes with a little circle 
+            cv2.imshow("Center of the Boxes", frame_circles)
             
         # the 'q' button is set as the
         # quitting button you may use any 
