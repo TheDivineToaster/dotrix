@@ -1,0 +1,12 @@
+2/22/2024
+Added:
+-Senior Project Assembly
+  Assembly of full display
+-Clear Panel
+  -Model of clear sheet
+-Frame Side(Long)
+  -Model of 40 in side of frame
+-Frame Side(Short)
+  -Model of 80 in side of frame
+-Final Product Backplate
+  -Model of project backplate
