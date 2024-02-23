@@ -10,3 +10,5 @@ Added:
   -Model of 80 in side of frame
 -Final Product Backplate
   -Model of project backplate
+-Digital Art Display Vers. 1
+  -Drawing of "Senior Project Assembly" with dimensions (All in inches)
