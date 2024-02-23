@@ -1,6 +1,6 @@
 import pygame
 import random
-import numpy
+import numpy as np
 from collections import Counter
 
 class RockPaperScissors():
@@ -12,13 +12,17 @@ class RockPaperScissors():
     colors = [color1, color2, color3, color4]
 
 
-    def __init__(self, size_x, size_y, num_colors):
+    def __init__(self, size_x, size_y, pixels_per_led, num_colors, FPS):
         self.width = size_x
         self.height = size_y
+        self.pixels_per_led = pixels_per_led
         self.num_colors = num_colors
+        self.FPS = FPS
         self.neighbor_list = None
         self.board = self.board_init()
-        self.screen = numpy.zeros((self.width, self.height, 3)) # needs to be able to be pygame.surfarray.make_surface'd
+        self.screen = np.zeros((self.width, self.height, 3)) # needs to be able to be pygame.surfarray.make_surface'd
+        
+        self.main()
 
     def board_init(self):
         mid = [[0, 0]]
@@ -83,3 +87,37 @@ class RockPaperScissors():
                 return self.color4
             case _:
                 return self.color1  # change this default value later?
+            
+    def main(self):
+        # Initialize Pygame
+        pygame.init()
+
+        # Create Pygame window
+        display = pygame.display.set_mode((self.width * self.pixels_per_led, self.height * self.pixels_per_led))
+        pygame.display.set_caption("Rock Paper Scissors")
+
+        # Initialize default screen
+        screen = pygame.surfarray.make_surface(np.zeros((self.width, self.height, 3)))
+
+        # ---- Main loop ----
+        clock = pygame.time.Clock()
+        running = True
+
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+            screen = self.evolve() # all sims should use a common function if we want to go with this being the base runner
+            display.blit(pygame.transform.scale(screen, (self.width * self.pixels_per_led, self.height * self.pixels_per_led)), (0, 0))
+
+            # Update the display
+            pygame.display.flip()
+
+            # Cap the frame rate
+            clock.tick(self.FPS)
+            print(clock.get_fps())
+
+        # Quit Pygame
+        pygame.quit()
+

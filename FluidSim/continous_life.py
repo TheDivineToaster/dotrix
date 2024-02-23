@@ -1,7 +1,7 @@
 import math
 import pygame
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as pyplot
 from game_of_life import GameOfLife
 
 
@@ -11,7 +11,7 @@ class ContinousLife(GameOfLife):
         super().__init__(*args, **kwargs, B=[], S=[])
         self.delta_x = delta_x
         self.wrap_color = wrap_color
-        self.cmap = plt.get_cmap(cmap)
+        self.cmap = pyplot.get_cmap(cmap)
 
     def get_new_state(self, state, nbr_sum, n_nbrs):
         """ update rule for a given cell """
