@@ -4,6 +4,9 @@ import pandas as pd
 from collections import Counter
 from game_of_life import GameOfLife
 
+# lines 78 and 79 show the density graph and rules
+# I've commented them out so they're less distracting
+
 
 class MultiStateLife(GameOfLife):
 
@@ -12,7 +15,7 @@ class MultiStateLife(GameOfLife):
     color3 = pygame.Color(31, 120, 180)
     color4 = pygame.Color(231, 41, 138)
 
-    def __init__(self, rules, threshold=3, *args, **kwargs):
+    def __init__(self, size_x, size_y, pixels_per_led, FPS, rules, neighbor_rules, threshold=3,):
         """ Rules should be give as
 
         rules = {1: [2], 2: [3, 4], ...}
@@ -23,12 +26,17 @@ class MultiStateLife(GameOfLife):
         to count as beating the cell of interest.
         """
 
+        self.width = size_x * pixels_per_led
+        self.height = size_y * pixels_per_led
+        self.FPS = FPS
         self.setup_rules(rules)
         self.setup_colors()
         self.threshold = threshold
         self.data_records = []
 
-        super().__init__(B=[], S=[], *args, **kwargs)
+        super().__init__(size_x=size_x, size_y=size_y, B=[], S=[], nh=neighbor_rules, cell_size=pixels_per_led)
+
+        self.main()
 
     @property
     def available_states(self):
@@ -68,8 +76,8 @@ class MultiStateLife(GameOfLife):
                 r = self.rects[(x, y)]
                 pygame.draw.rect(screen, color, r, 0)
 
-        self._draw_rules(screen)
-        self._draw_density_graph(screen)
+        #self._draw_rules(screen)
+        #self._draw_density_graph(screen)
 
     def _draw_density_graph(self, screen):
         import matplotlib
@@ -190,50 +198,31 @@ class MultiStateLife(GameOfLife):
                 new_board[x] = state
         self.board = new_board
 
+    def main(self):
+        # Initialize Pygame
+        pygame.init()
+        np.random.seed(42)
 
-if __name__ == '__main__':
+        # Create Pygame window
+        screen = pygame.display.set_mode((self.width, self.height), pygame.SRCALPHA, 32)
+        pygame.display.set_caption("Working Rock Paper Scissors")
 
-    # setup
-    seed = 42
-    pygame.init()
-    np.random.seed(seed)
 
-    # Constants
-    size_x = 1600
-    size_y = 900
-    FPS = 10
+        # ---- Main loop ----
+        clock = pygame.time.Clock()
+        running = True
 
-    # setup display
-    pygame.init()
-    screen = pygame.display.set_mode((size_x, size_y), pygame.SRCALPHA, 32)
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-    # grid size
-    cell_size = 20
-    size_xs = size_x / cell_size
-    size_ys = size_y / cell_size
+            self.run(screen, FPS=self.FPS, max_steps=1000)
 
-    # assert grid perfectly fits into canvas
-    assert abs(size_xs - int(size_xs)) < 1e-10
-    assert abs(size_ys - int(size_ys)) < 1e-10
-    size_xs = int(size_xs)
-    size_ys = int(size_ys)
+            # Cap the frame rate
+            clock.tick(self.FPS)
+            print(clock.get_fps())
 
-    # game rules
-    nh = 'Moore'
-    threshold = 3
+        # Quit Pygame
+        pygame.quit()
 
-    # 3-state (normal Rock Paper Scissor)
-    rules = {0: [2], 1: [0], 2: [1]}
-
-    # 4-state (unbalanced)
-    # rules = {1: [4], 2: [1], 3: [1, 2], 4: [2, 3]}
-
-    # 5-state (balanced)
-    # rules = {1: [4, 5], 2: [1, 5], 3: [1, 2], 4: [2, 3], 5: [3, 4]}
-
-    # run game of life
-    game = MultiStateLife(size_x=size_xs, size_y=size_ys, nh=nh, rules=rules, threshold=threshold,
-                          cell_size=cell_size)
-
-    game.run(screen, FPS=FPS, max_steps=1000)
-    pygame.quit()
