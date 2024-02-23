@@ -1,6 +1,7 @@
 import numpy
 from rock_paper_scissors import RockPaperScissors
 from fluid_sim import FluidSim
+from magma_sim import MagmaSim
 
 '''Thoughts here are that this script acts as the pygame interpreter, 
 and we have other scripts to control different ways to mess with the image.
@@ -14,11 +15,20 @@ FPS = 60    # base fps value, each game should have their own
 
 
 # Choose which sim we use
-game_select = numpy.random.randint(0,1) # inclusive
-game_select = 1 # hard set to test TODO: REMOVE THIS
+game_select = numpy.random.randint(0,2) # inclusive
+game_select = 2 # hard set to test TODO: REMOVE THIS
 if (game_select == 0):
-    game = RockPaperScissors(WIDTH, HEIGHT, pixels_per_led, 4, FPS=2) # grid size and number of colors
+    FPS = 8
+    game = RockPaperScissors(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, num_colors=4, FPS=FPS) # grid size and number of colors
 elif (game_select == 1):
-    game = FluidSim(WIDTH, HEIGHT, pixels_per_led, FPS=60)
+    FPS = 60
+    game = FluidSim(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, FPS=FPS)
+elif (game_select == 2):
+    FPS = 10
+    nh = 'Moore'
+    delta_x = 0.01
+    starting_density = 0.5
+    game = MagmaSim(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, FPS=FPS, 
+                    neighbor_rules=nh, delta_x=delta_x, starting_density=starting_density)
 
 
