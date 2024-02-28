@@ -1,9 +1,9 @@
 import numpy
-from rock_paper_scissors import RockPaperScissors
+from rock_paper_scissors_sim import RockPaperScissors
 from fluid_sim import FluidSim
-from game_of_life import GameOfLife
+from game_of_life_sim import GameOfLife
 from magma_sim import MagmaSim
-from multi_state_life import MultiStateLife
+from multi_state_life_sim import MultiStateLife
 
 '''Thoughts here are that this script acts as the pygame interpreter, 
 and we have other scripts to control different ways to mess with the image.

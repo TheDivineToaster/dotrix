@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 import pandas as pd
 from collections import Counter
-from game_of_life import GameOfLife
+from game_of_life_sim import GameOfLife
 
 # modified from Erik Fransson's Game of Life project 
 # https://gitlab.com/erikfransson/game_of_life
