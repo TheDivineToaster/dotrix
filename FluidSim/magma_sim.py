@@ -4,6 +4,9 @@ import numpy as np
 import matplotlib.pyplot as pyplot
 from game_of_life import GameOfLife
 
+# modified from Erik Fransson's Game of Life project 
+# https://gitlab.com/erikfransson/game_of_life
+
 
 class MagmaSim(GameOfLife):
 

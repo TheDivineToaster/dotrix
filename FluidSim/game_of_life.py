@@ -3,6 +3,9 @@ import sys
 import pygame
 import numpy as np
 
+# modified from Erik Fransson's Game of Life project 
+# https://gitlab.com/erikfransson/game_of_life
+
 
 class GameOfLife:
 

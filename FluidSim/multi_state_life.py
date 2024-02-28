@@ -4,6 +4,9 @@ import pandas as pd
 from collections import Counter
 from game_of_life import GameOfLife
 
+# modified from Erik Fransson's Game of Life project 
+# https://gitlab.com/erikfransson/game_of_life
+
 # lines 78 and 79 show the density graph and rules
 # I've commented them out so they're less distracting
 
