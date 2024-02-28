@@ -1,6 +1,7 @@
 import numpy
 from rock_paper_scissors import RockPaperScissors
 from fluid_sim import FluidSim
+from game_of_life import GameOfLife
 from magma_sim import MagmaSim
 from multi_state_life import MultiStateLife
 
@@ -16,23 +17,42 @@ FPS = 60    # base fps value, each game should have their own
 
 
 # Choose which sim we use
-game_select = numpy.random.randint(0,2) # inclusive
-game_select = 3 # hard set to test TODO: REMOVE THIS
+game_select = numpy.random.randint(0,4) # inclusive
+game_select = 2 # hard set to test TODO: REMOVE THIS
 
+# --- RockPaperScissors --- #
 if (game_select == 0):
     FPS = 8
     game = RockPaperScissors(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, num_colors=4, FPS=FPS) # grid size and number of colors
+
+# --- Fluid Sim --- #
 elif (game_select == 1):
     FPS = 60
     game = FluidSim(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, FPS=FPS)
+
+# --- Basic Game of Life --- #
 elif (game_select == 2):
+    FPS = 10
+    # game rules
+    B = [3]
+    S = [2, 3]
+    nh = 'Moore'
+    starting_density = 0.6
+    # run game of life
+    game = GameOfLife(size_x=WIDTH, size_y=HEIGHT, FPSs=FPS, B=B, S=S, nh=nh,
+                      cell_size=pixels_per_led, starting_density=starting_density, run_main=True)
+
+# --- Magma Sim --- #
+elif (game_select == 3):
     FPS = 10
     nh = 'Moore'
     delta_x = 0.01
     starting_density = 0.5
     game = MagmaSim(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, FPS=FPS, 
                     neighbor_rules=nh, delta_x=delta_x, starting_density=starting_density)
-elif (game_select == 3):
+    
+# --- Rock Paper Scissors --- #
+elif (game_select == 4):
     FPS = 10
     nh = 'Moore'
     threshold = 3

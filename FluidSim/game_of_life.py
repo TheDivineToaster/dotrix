@@ -1,4 +1,3 @@
-import os
 import sys
 import pygame
 import numpy as np
@@ -16,7 +15,7 @@ class GameOfLife:
     background_color = pygame.Color(0, 0, 0)
 
     def __init__(self, size_x, size_y, B, S, nh='Moore',
-                 cell_size=1, starting_density=0.5):
+                 cell_size=1, starting_density=0.5, run_main = False, FPSs=10):
 
         self.neighborhood = nh
         self.step = 0
@@ -30,6 +29,10 @@ class GameOfLife:
         self.generate_random_board(density=starting_density)
         self.generate_neighbor_list(nh)
         self.setup_grid()
+
+        if (run_main):
+            self.FPS = FPSs
+            self.main()
 
     def _handle_events(self):
         # events
@@ -55,13 +58,11 @@ class GameOfLife:
                 r = pygame.rect.Rect(x_pos, y_pos, width, width)
                 self.rects[(x, y)] = r
 
-    def run(self, screen, FPS=20, max_steps=np.inf, savedir=None,
+    def run(self, screen, FPS=20, max_steps=np.inf, 
             show_step=False, draw=True, verbose=False):
 
         # setup
         clock = pygame.time.Clock()
-        if savedir is not None:
-            os.makedirs(savedir, exist_ok=True)
 
         # main loop
         running = True
@@ -76,11 +77,6 @@ class GameOfLife:
                 pygame.display.flip()
                 clock.tick(FPS)
             self.evolve(verbose)
-
-            # save snapshot
-            if savedir is not None:
-                fname = os.path.join(savedir, 'state-{}.png'.format(self.step))
-                pygame.image.save(screen, fname)
 
             # check for stopping
             if self.step > max_steps:
@@ -167,42 +163,27 @@ class GameOfLife:
         if (0 <= x < self.size_x) and (0 <= y < self.size_y):
             return True
         return False
+    
+    def main(self):
+        # Initialize Pygame
+        pygame.init()
+        np.random.seed(400)
 
+        # Create Pygame window
+        screen = pygame.display.set_mode((self.size_x * self.cell_size, self.size_y * self.cell_size), pygame.SRCALPHA, 32)
+        pygame.display.set_caption("Game of Life")
 
-if __name__ == '__main__':
+        # ---- Main loop ----
+        clock = pygame.time.Clock()
+        running = True
 
-    # setup
-    pygame.init()
-    np.random.seed(400)
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-    # Constants
-    size_x = 1600
-    size_y = 900
-    FPS = 10
+            self.run(screen, FPS=self.FPS)
 
-    # setup display
-    pygame.init()
-    screen = pygame.display.set_mode((size_x, size_y), pygame.SRCALPHA, 32)
-
-    # grid size
-    cell_size = 20
-    size_xs = size_x / cell_size
-    size_ys = size_y / cell_size
-
-    # assert grid perfectly fits into canvas
-    assert abs(size_xs - int(size_xs)) < 1e-10
-    assert abs(size_ys - int(size_ys)) < 1e-10
-    size_xs = int(size_xs)
-    size_ys = int(size_ys)
-
-    # game rules
-    B = [3]
-    S = [2, 3]
-    nh = 'Moore'
-    starting_density = 0.6
-
-    # run game of life
-    game = GameOfLife(size_xs, size_ys, B=B, S=S, nh=nh,
-                      cell_size=cell_size, starting_density=starting_density)
-    game.run(screen, FPS=FPS)
-    pygame.quit()
+            # Cap the frame rate
+            clock.tick(self.FPS)
+            print(clock.get_fps())
