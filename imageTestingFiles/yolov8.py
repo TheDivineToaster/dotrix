@@ -3,16 +3,23 @@ import time
 import cv2
 from PIL import Image
 from ultralytics import YOLO
+import torch
+
+# Set device name to 'cuda' or 'gpu' or '0' if PyTorch sees the GPU, not sure which one works but supposedly any should work
+# need CUDA capable gpu, cuda installded, cudnn installed, and pytorch installed for the specific version of cuda you are using
+torch.cuda.set_device(0)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 # the algo location
-model = YOLO('./train/weights/best.pt')
+model = YOLO('./train/weights/best.pt').to(device)
 
 # define a video capture object
 # change if your webcam is the second camera plugged in
 vid = cv2.VideoCapture(0)
 
 # modify the framerate if you need a want
-frame_rate = 15
+frame_rate = 60
 
 prev = 0
 while True:
