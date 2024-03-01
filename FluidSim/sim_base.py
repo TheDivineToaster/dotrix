@@ -4,6 +4,7 @@ from fluid_sim import FluidSim
 from game_of_life_sim import GameOfLife
 from magma_sim import MagmaSim
 from multi_state_life_sim import MultiStateLife
+from _staging_area import fluid_sim_gif
 
 '''Thoughts here are that this script acts as the pygame interpreter, 
 and we have other scripts to control different ways to mess with the image.
@@ -18,7 +19,7 @@ FPS = 60    # base fps value, each game should have their own
 
 # Choose which sim we use
 game_select = numpy.random.randint(0,4) # inclusive
-game_select = 2 # hard set to test TODO: REMOVE THIS
+game_select = 5 # hard set to test TODO: REMOVE THIS
 
 # --- RockPaperScissors --- #
 if (game_select == 0):
@@ -68,4 +69,10 @@ elif (game_select == 4):
     game = MultiStateLife(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, FPS=FPS,
                           neighbor_rules=nh, rules=rules, threshold=threshold)
 
+# --- Github Fluid Sim ---
+elif (game_select == 5):
+    #WIDTH = 500
+    #HEIGHT = 500
+    game = fluid_sim_gif.FluidSimGif(size_x=WIDTH, size_y=HEIGHT, duration=200)
+    game.main()
 
