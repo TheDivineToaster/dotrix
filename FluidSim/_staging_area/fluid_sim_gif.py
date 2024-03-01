@@ -9,6 +9,10 @@ from scipy.special import erf
 import numpy as np
 import scipy.sparse as sp
 
+# modified from GregTJ's Stable Fluids project
+# https://github.com/GregTJ/stable-fluids
+# Unlicense license
+
 #region FluidSim class
 
 class FluidSimGif():
