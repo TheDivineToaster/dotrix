@@ -76,6 +76,7 @@ class GameOfLife:
                 self.draw(screen, show_step=show_step)
                 pygame.display.flip()
                 clock.tick(FPS)
+                print(clock.get_fps())
             self.evolve(verbose)
 
             # check for stopping

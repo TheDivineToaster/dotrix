@@ -18,7 +18,7 @@ FPS = 60    # base fps value, each game should have their own
 
 # Choose which sim we use
 game_select = numpy.random.randint(0,4) # inclusive
-game_select = 5 # hard set to test TODO: REMOVE THIS
+game_select = 1 # hard set to test TODO: REMOVE THIS
 
 # --- RockPaperScissors/MultiStateLife --- #
 if (game_select == 0):
@@ -38,7 +38,7 @@ if (game_select == 0):
                           neighbor_rules=nh, rules=rules, threshold=threshold)
 # --- Fluid Sim --- #
 elif (game_select == 1):
-    game = fluid_sim.FluidSim(size_x=WIDTH, size_y=HEIGHT, duration=200)
+    game = fluid_sim.FluidSim(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, num_frames=200, inflow_count=5)
     game.main()
 
 # --- Basic Game of Life --- #

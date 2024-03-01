@@ -6,6 +6,7 @@ from scipy.sparse.linalg import factorized
 from PIL import Image
 from scipy.special import erf
 
+import pygame
 import numpy as np
 import scipy.sparse as sp
 
@@ -16,14 +17,17 @@ import scipy.sparse as sp
 #region FluidSim class
 
 class FluidSim():
-    def __init__(self, size_x, size_y, duration, 
+    def __init__(self, size_x, size_y, pixels_per_led, num_frames, 
                  inflow_padding=50, inflow_duration=60, inflow_radius=8, inflow_velo=1, inflow_count=5):
+        self.size_x = size_x
+        self.size_y = size_y
         self.resolution = size_y, size_x
-        self.duration = duration
+        self.pixels_per_led = pixels_per_led
+        self.num_frames = num_frames
         self.inflow_duration = inflow_duration
 
         print('Generating fluid solver, this may take some time.')
-        self.fluid = Fluid(self.resolution, 'dye')
+        self.fluid = Fluid(self.resolution, 'dye') # dye is the name of a variable, not the name of a preset grid
 
         center = np.floor_divide(self.resolution, 2)
         r = np.min(center) - inflow_padding
@@ -41,9 +45,17 @@ class FluidSim():
             self.inflow_dye[mask] = 1
 
     def main(self):
+        pygame.init()
+        np.random.seed(400)
+
+        # Create Pygame window
+        screen = pygame.display.set_mode((self.size_x * self.pixels_per_led, self.size_y * self.pixels_per_led), pygame.SRCALPHA, 32)
+        pygame.display.set_caption("Fluid Sim")
+
+
         frames = []
-        for f in range(self.duration):
-            print(f'Computing frame {f + 1} of {self.duration}.')
+        for f in range(self.num_frames):
+            print(f'Computing frame {f + 1} of {self.num_frames}.')
             if f <= self.inflow_duration:
                 self.fluid.velocity += self.inflow_velocity
                 self.fluid.dye += self.inflow_dye
@@ -55,7 +67,9 @@ class FluidSim():
 
             color = np.dstack((curl, np.ones(self.fluid.shape), self.fluid.dye))
             color = (np.clip(color, 0, 1) * 255).astype('uint8')
-            frames.append(Image.fromarray(color, mode='HSV').convert('RGB'))
+            image = Image.fromarray(color, mode='HSV').convert('RGB')
+            frames.append(image)
+            #screen.blit(image)
 
         print('Saving simulation result.')
         frames[0].save('example.gif', save_all=True, append_images=frames[1:], duration=20, loop=0)
