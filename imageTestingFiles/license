@@ -1,0 +1,14 @@
+Hand tracking license
+@misc{
+    hand_detect-xhlhk_dataset,
+    title = { hand_detect Dataset },
+    type = { Open Source Dataset },
+    author = { lab },
+    howpublished = { \url{ https://universe.roboflow.com/lab-8utlg/hand_detect-xhlhk } },
+    url = { https://universe.roboflow.com/lab-8utlg/hand_detect-xhlhk },
+    journal = { Roboflow Universe },
+    publisher = { Roboflow },
+    year = { 2024 },
+    month = { jan },
+    note = { visited on 2024-03-04 },
+}
