@@ -12,3 +12,16 @@ Added:
   -Model of project backplate
 -Digital Art Display Vers. 1
   -Drawing of "Senior Project Assembly" with dimensions (All in inches)
+
+3/7/2024
+Edits:
+-Senior Project Assembly
+  Updated with new dimensions and parts
+-Clear Panel
+  Reduced to 40 1/2 in X 40 1/2 in
+-Frame Side(Long)
+  No longer required
+-Frame Side(Short)
+  Added 1/4 in X 1/4 in divot to accomodate wiring
+-Final Product Backplate
+  Reduced to a square
