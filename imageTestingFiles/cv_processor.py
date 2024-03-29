@@ -148,7 +148,7 @@ def main():
                         box_string += str(val) + ", "
 
                 # logging the string
-                log = open("logfile.txt", "a")
+                log = open("logfile.log", "a")
                 log.write(datetime.now().strftime("%H:%M:%S") + " "+ box_string + "\n")
                 log.close()
 
