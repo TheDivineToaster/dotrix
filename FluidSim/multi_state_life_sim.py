@@ -193,7 +193,10 @@ class MultiStateLife(GameOfLife):
         new_board = dict()
         for x, state in self.board.items():
             if x in hand_list:
-                new_board[x] = self.step % self.n_states + 1
+                hand_state = self.step % self.n_states + 1
+                new_board[x] = hand_state
+                for y in self.nbr_list[x]:
+                    new_board[y] = hand_state
             else:
                 nbrs = self.nbr_list[x]
                 nbrs_states = [self.board[n] for n in nbrs]

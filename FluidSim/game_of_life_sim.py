@@ -47,7 +47,11 @@ class GameOfLife:
             hand[0] /= 10
             hand[1] /= 10
             new_list.append((int(hand[0]),int(hand[1])))
-        return new_list
+        hand_list = []
+        for hand in new_list:
+            hand_list.append(hand)
+            hand_list.append(self.nbr_list[hand])
+        return hand_list
 
     def _handle_events(self):
         # events

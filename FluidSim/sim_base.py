@@ -26,7 +26,7 @@ if (game_select == 0):
     nh = 'Moore'
     threshold = 3
     rules_select = numpy.random.randint(0,2) # inclusive
-    #rules_select = 2 # hard set to test TODO: REMOVE THIS
+    rules_select = 1 # hard set to test TODO: REMOVE THIS
 
     if (rules_select == 0): # 3-state (normal Rock Paper Scissor)
         rules = {1: [2], 2: [0], 3: [1]}
