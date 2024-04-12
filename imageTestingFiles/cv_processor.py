@@ -1,5 +1,5 @@
 from time import time
-from cv2 import VideoCapture
+from cv2 import VideoCapture, CAP_PROP_FRAME_WIDTH, CAP_PROP_FRAME_HEIGHT, imshow, CAP_DSHOW
 from ultralytics import YOLO
 from torch import device
 from torch import cuda
@@ -78,6 +78,8 @@ class cv_processor:
         # define a video capture object
         # change if your webcam is the second camera plugged in
         self._vid = VideoCapture(webcam_num)
+        self._vid.set(CAP_PROP_FRAME_WIDTH, 600)
+        self._vid.set(CAP_PROP_FRAME_HEIGHT, 600)
 
     def use_active_cv2_cam(self, cv2_video_capture: VideoCapture):
         """Method that attaches the cv_processor to an opencv capture so it can use it
