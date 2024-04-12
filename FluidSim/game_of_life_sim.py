@@ -1,6 +1,7 @@
 import sys
 import pygame
 import numpy as np
+from cv_processor import cv_processor
 
 # modified from Erik Fransson's Game of Life project 
 # https://gitlab.com/erikfransson/game_of_life
@@ -30,9 +31,23 @@ class GameOfLife:
         self.generate_neighbor_list(nh)
         self.setup_grid()
 
+        self.cv = cv_processor(r"FluidSim\weights\best.pt")
+        self.cv.start_cam(0)
+
         if (run_main):
             self.FPS = FPSs
             self.main()
+
+    def get_hand_input(self):
+        self.cv.capture()
+
+        hand_list = self.cv.get_xy_list()
+        new_list = []
+        for hand in hand_list:
+            hand[0] /= 10
+            hand[1] /= 10
+            new_list.append((int(hand[0]),int(hand[1])))
+        return new_list
 
     def _handle_events(self):
         # events

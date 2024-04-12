@@ -187,18 +187,23 @@ class MultiStateLife(GameOfLife):
         self.data_records.append(row)
 
         # update
+        hand_list = self.get_hand_input()
+        print(hand_list)
         self.step += 1
         new_board = dict()
         for x, state in self.board.items():
-            nbrs = self.nbr_list[x]
-            nbrs_states = [self.board[n] for n in nbrs]
-
-            counts = Counter({b: nbrs_states.count(b) for b in self.rules[state]})
-            nbr_state, count = counts.most_common(1)[0]
-            if count >= self.threshold:
-                new_board[x] = nbr_state
+            if x in hand_list:
+                new_board[x] = self.step % self.n_states + 1
             else:
-                new_board[x] = state
+                nbrs = self.nbr_list[x]
+                nbrs_states = [self.board[n] for n in nbrs]
+
+                counts = Counter({b: nbrs_states.count(b) for b in self.rules[state]})
+                nbr_state, count = counts.most_common(1)[0]
+                if count >= self.threshold:
+                    new_board[x] = nbr_state
+                else:
+                    new_board[x] = state
         self.board = new_board
 
     def main(self):

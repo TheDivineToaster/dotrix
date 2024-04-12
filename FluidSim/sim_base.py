@@ -11,14 +11,14 @@ like fluid sim or cellular automata'''
 
 
 # Constants
-WIDTH, HEIGHT = 123, 48 # number of "LEDs" on the screen
+WIDTH, HEIGHT = 60, 60 # number of "LEDs" on the screen
 pixels_per_led = 10
 FPS = 60    # base fps value, each game should have their own
 
 
 # Choose which sim we use
 game_select = numpy.random.randint(0,4) # inclusive
-game_select = 1 # hard set to test TODO: REMOVE THIS
+game_select = 0 # hard set to test TODO: REMOVE THIS
 
 # --- RockPaperScissors/MultiStateLife --- #
 if (game_select == 0):
@@ -26,10 +26,10 @@ if (game_select == 0):
     nh = 'Moore'
     threshold = 3
     rules_select = numpy.random.randint(0,2) # inclusive
-    rules_select = 2 # hard set to test TODO: REMOVE THIS
+    #rules_select = 2 # hard set to test TODO: REMOVE THIS
 
     if (rules_select == 0): # 3-state (normal Rock Paper Scissor)
-        rules = {0: [2], 1: [0], 2: [1]}
+        rules = {1: [2], 2: [0], 3: [1]}
     elif (rules_select ==1): # 4-state (unbalanced)
         rules = {1: [4], 2: [1], 3: [1, 2], 4: [2, 3]}
     else: # (rules_select==2): # 5-state (balanced)
@@ -38,7 +38,7 @@ if (game_select == 0):
                           neighbor_rules=nh, rules=rules, threshold=threshold)
 # --- Fluid Sim --- #
 elif (game_select == 1):
-    game = fluid_sim.FluidSim(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, num_frames=200, inflow_count=5)
+    game = fluid_sim.FluidSim(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, num_frames=200, inflow_count=2)
     game.main()
 
 # --- Basic Game of Life --- #
