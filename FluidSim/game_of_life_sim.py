@@ -46,7 +46,7 @@ class GameOfLife:
         for hand in hand_list:
             hand[0] /= 10
             hand[1] /= 10
-            new_list.append((int(hand[0]),int(hand[1])))
+            new_list.append((int(self.size_x - hand[0]),int(hand[1])))
         hand_list = []
         for hand in new_list:
             hand_list.append(hand)
@@ -121,18 +121,23 @@ class GameOfLife:
 
     def evolve(self, verbose):
         # update
+        hand_list = self.get_hand_input()
+        print(hand_list)
         self.step += 1
         to_birth = []
         to_death = []
         for x in self.board.keys():
-            nbrs = self.nbr_list[x]
-            nbrs_alive = sum(self.board[n] for n in nbrs)
-            if self.board[x] == 0:
-                if nbrs_alive in self.B:
-                    to_birth.append(x)
+            if x in hand_list:
+                to_birth.append(x)
             else:
-                if nbrs_alive not in self.S:
-                    to_death.append(x)
+                nbrs = self.nbr_list[x]
+                nbrs_alive = sum(self.board[n] for n in nbrs)
+                if self.board[x] == 0:
+                    if nbrs_alive in self.B:
+                        to_birth.append(x)
+                else:
+                    if nbrs_alive not in self.S:
+                        to_death.append(x)
 
         for x in to_death:
             self.board[x] = 0
@@ -146,6 +151,8 @@ class GameOfLife:
 
     def generate_random_board(self, density=0.5):
         board = np.random.choice([0, 1], (self.size_x, self.size_y), p=[1-density, density])
+        board = np.zeros((self.size_x, self.size_y))
+
 
         board_dict = dict()
         for i in range(board.shape[0]):

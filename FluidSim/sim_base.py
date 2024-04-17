@@ -18,7 +18,7 @@ FPS = 60    # base fps value, each game should have their own
 
 # Choose which sim we use
 game_select = numpy.random.randint(0,4) # inclusive
-game_select = 0 # hard set to test TODO: REMOVE THIS
+game_select = 2 # hard set to test TODO: REMOVE THIS
 
 # --- RockPaperScissors/MultiStateLife --- #
 if (game_select == 0):
