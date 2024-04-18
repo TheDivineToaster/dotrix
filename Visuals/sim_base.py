@@ -42,7 +42,7 @@ def get_hand_input(self, radius=1):
 
 # Choose which sim we use
 game_select = numpy.random.randint(0,2) # inclusive
-game_select = 2
+game_select = 0
 
 # --- Basic Game of Life --- #
 if (game_select == 0):
