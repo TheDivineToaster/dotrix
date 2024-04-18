@@ -188,12 +188,11 @@ class MultiStateLife(GameOfLife):
 
         # update
         hand_list = self.get_hand_input(7)
-        print(hand_list)
         self.step += 1
         new_board = dict()
+        hand_state = (int)(self.step / self.n_states) % self.n_states + 1
         for x, state in self.board.items():
             if x in hand_list:
-                hand_state = self.step % self.n_states + 1
                 new_board[x] = hand_state
                 for y in self.nbr_list[x]:
                     new_board[y] = hand_state

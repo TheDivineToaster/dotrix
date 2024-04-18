@@ -51,18 +51,10 @@ class GameOfLife:
         hand_list = []
         
         for hand in scaled_hand_list:
-            xmin = (int)(hand[0] - radius)
-            if xmin < 0:
-                xmin = 0 
-            xmax = (int)(hand[0] + radius)
-            if xmax >= self.size_x:
-                xmax = self.size_x - 1
-            ymin = (int)(hand[1] - radius)
-            if ymin < 0:
-                ymin = 0
-            ymax = (int)(hand[1] + radius)
-            if ymax >= self.size_y:
-                ymax = self.size_y - 1
+            xmin = max(0, (int)(hand[0] - radius)) 
+            xmax = min(self.size_x - 1, (int)(hand[0] + radius))
+            ymin = max(0, (int)(hand[1] - radius))
+            ymax = min(self.size_y - 1, (int)(hand[1] + radius))
             for x in range(xmin, xmax):
                 for y in range(ymin, ymax):
                     hand_list.append((x, y))
@@ -137,7 +129,6 @@ class GameOfLife:
     def evolve(self, verbose):
         # update
         hand_list = self.get_hand_input(3)
-        print(hand_list)
         self.step += 1
         to_birth = []
         to_death = []
