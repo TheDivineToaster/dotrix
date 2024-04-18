@@ -11,9 +11,10 @@ from game_of_life_sim import GameOfLife
 class MagmaSim(GameOfLife):
 
     def __init__(self, size_x, size_y, pixels_per_led, FPS, 
-                 neighbor_rules, starting_density, delta_x = 0.25, cmap='magma', wrap_color=True):
+                 neighbor_rules, starting_density, delta_x = 0.25, cmap='magma', wrap_color=True, rad=1):
         self.width = size_x * pixels_per_led
         self.height = size_y * pixels_per_led
+        self.radius = rad
 
         
         super().__init__(size_x=size_x, size_y=size_y, B=[], S=[], 
@@ -31,21 +32,26 @@ class MagmaSim(GameOfLife):
         x = (state + nbr_sum) / (n_nbrs+1)
         new_state = math.modf(x + self.delta_x)[0]
         new_state = max(min(new_state, 1), 0)
-        # print(state, nbr_sum, x, new_state)
+        #print(state, nbr_sum, x, new_state)
         return new_state
 
     def evolve(self, verbose):
+        from sim_base import get_hand_input
 
         # update
+        hand_list = get_hand_input(self.radius)
         self.step += 1
         new_board = dict()
         for x in self.board.keys():
-            nbrs = self.nbr_list[x]
-            nbr_sum = np.sum([self.board[n] for n in nbrs])
+            if x in hand_list:
+                new_board[x] = 1
+            else:
+                nbrs = self.nbr_list[x]
+                nbr_sum = np.sum([self.board[n] for n in nbrs])
 
-            state = self.board[x]
-            new_val = self.get_new_state(state, nbr_sum, len(nbrs))
-            new_board[x] = new_val
+                state = self.board[x]
+                new_val = self.get_new_state(state, nbr_sum, len(nbrs))
+                new_board[x] = new_val
         self.board = new_board
 
         # output

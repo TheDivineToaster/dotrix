@@ -18,7 +18,7 @@ class MultiStateLife(GameOfLife):
     color3 = pygame.Color(31, 120, 180)
     color4 = pygame.Color(231, 41, 138)
 
-    def __init__(self, size_x, size_y, pixels_per_led, FPS, rules, neighbor_rules, threshold=3,):
+    def __init__(self, size_x, size_y, pixels_per_led, FPS, rules, neighbor_rules, threshold=3,rad=1):
         """ Rules should be give as
 
         rules = {1: [2], 2: [3, 4], ...}
@@ -36,6 +36,7 @@ class MultiStateLife(GameOfLife):
         self.setup_colors()
         self.threshold = threshold
         self.data_records = []
+        self.radius = rad
 
         super().__init__(size_x=size_x, size_y=size_y, B=[], S=[], nh=neighbor_rules, cell_size=pixels_per_led)
 
@@ -179,6 +180,7 @@ class MultiStateLife(GameOfLife):
             screen.blit(text, (x+10, y + (i+1.1)*dy))
 
     def evolve(self, verbose):
+        from sim_base import get_hand_input
         # record data
         row = dict(step=self.step)
         states = list(self.board.values())
@@ -187,7 +189,7 @@ class MultiStateLife(GameOfLife):
         self.data_records.append(row)
 
         # update
-        hand_list = self.get_hand_input(7)
+        hand_list = get_hand_input(self.radius)
         self.step += 1
         new_board = dict()
         hand_state = (int)(self.step / self.n_states) % self.n_states + 1

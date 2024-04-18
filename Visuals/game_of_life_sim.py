@@ -1,7 +1,6 @@
 import sys
 import pygame
 import numpy as np
-from cv_processor import cv_processor
 
 # modified from Erik Fransson's Game of Life project 
 # https://gitlab.com/erikfransson/game_of_life
@@ -16,7 +15,7 @@ class GameOfLife:
     background_color = pygame.Color(0, 0, 0)
 
     def __init__(self, size_x, size_y, B, S, nh='Moore',
-                 cell_size=1, starting_density=0.5, run_main = False, FPSs=10):
+                 cell_size=1, starting_density=0.5, run_main = False, FPSs=10, rad=1):
 
         self.neighborhood = nh
         self.step = 0
@@ -31,34 +30,11 @@ class GameOfLife:
         self.generate_neighbor_list(nh)
         self.setup_grid()
 
-        self.cv = cv_processor(r"FluidSim\weights\best.pt")
-        self.cv.start_cam(0)
+        self.radius = rad
 
         if (run_main):
             self.FPS = FPSs
             self.main()
-
-    def get_hand_input(self, radius=1):
-        radius /= 2
-        self.cv.capture()
-
-        hand_list = self.cv.get_xy_list()
-        scaled_hand_list = []
-        for hand in hand_list:
-            hand[0] /= 10
-            hand[1] /= 10
-            scaled_hand_list.append((int(self.size_x - hand[0]),int(hand[1])))
-        hand_list = []
-        
-        for hand in scaled_hand_list:
-            xmin = max(0, (int)(hand[0] - radius)) 
-            xmax = min(self.size_x - 1, (int)(hand[0] + radius))
-            ymin = max(0, (int)(hand[1] - radius))
-            ymax = min(self.size_y - 1, (int)(hand[1] + radius))
-            for x in range(xmin, xmax):
-                for y in range(ymin, ymax):
-                    hand_list.append((x, y))
-        return hand_list
 
     def _handle_events(self):
         # events
@@ -127,8 +103,9 @@ class GameOfLife:
             screen.blit(self.text, (50, 30))
 
     def evolve(self, verbose):
+        from sim_base import get_hand_input
         # update
-        hand_list = self.get_hand_input(3)
+        hand_list = get_hand_input(self.radius)
         self.step += 1
         to_birth = []
         to_death = []
