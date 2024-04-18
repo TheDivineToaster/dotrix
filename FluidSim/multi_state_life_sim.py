@@ -187,7 +187,7 @@ class MultiStateLife(GameOfLife):
         self.data_records.append(row)
 
         # update
-        hand_list = self.get_hand_input()
+        hand_list = self.get_hand_input(7)
         print(hand_list)
         self.step += 1
         new_board = dict()

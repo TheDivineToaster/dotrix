@@ -38,19 +38,34 @@ class GameOfLife:
             self.FPS = FPSs
             self.main()
 
-    def get_hand_input(self):
+    def get_hand_input(self, radius=1):
+        radius /= 2
         self.cv.capture()
 
         hand_list = self.cv.get_xy_list()
-        new_list = []
+        scaled_hand_list = []
         for hand in hand_list:
             hand[0] /= 10
             hand[1] /= 10
-            new_list.append((int(self.size_x - hand[0]),int(hand[1])))
+            scaled_hand_list.append((int(self.size_x - hand[0]),int(hand[1])))
         hand_list = []
-        for hand in new_list:
-            hand_list.append(hand)
-            hand_list.append(self.nbr_list[hand])
+        
+        for hand in scaled_hand_list:
+            xmin = (int)(hand[0] - radius)
+            if xmin < 0:
+                xmin = 0 
+            xmax = (int)(hand[0] + radius)
+            if xmax >= self.size_x:
+                xmax = self.size_x - 1
+            ymin = (int)(hand[1] - radius)
+            if ymin < 0:
+                ymin = 0
+            ymax = (int)(hand[1] + radius)
+            if ymax >= self.size_y:
+                ymax = self.size_y - 1
+            for x in range(xmin, xmax):
+                for y in range(ymin, ymax):
+                    hand_list.append((x, y))
         return hand_list
 
     def _handle_events(self):
@@ -121,7 +136,7 @@ class GameOfLife:
 
     def evolve(self, verbose):
         # update
-        hand_list = self.get_hand_input()
+        hand_list = self.get_hand_input(3)
         print(hand_list)
         self.step += 1
         to_birth = []
@@ -151,7 +166,7 @@ class GameOfLife:
 
     def generate_random_board(self, density=0.5):
         board = np.random.choice([0, 1], (self.size_x, self.size_y), p=[1-density, density])
-        board = np.zeros((self.size_x, self.size_y))
+        board = np.zeros((self.size_x, self.size_y))  # for testing purposes only
 
 
         board_dict = dict()
