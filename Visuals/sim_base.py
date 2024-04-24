@@ -18,7 +18,7 @@ WIDTH, HEIGHT = 60, 60 # number of "LEDs" on the screen
 pixels_per_led = 10
 FPS = 60    # base fps value, each game should have their own
 
-computer_vision = cv_processor(r"Visuals\weights\best.pt")
+computer_vision = cv_processor(rf"{os.getcwd()}\Visuals\weights\best.pt")
 computer_vision.start_cam(0)
 
 def get_hand_input(radius=1):
