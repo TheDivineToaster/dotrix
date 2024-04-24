@@ -100,9 +100,7 @@ else:
     filename = 'file:///' + os.getcwd() + '/Visuals/' + 'csh_01.html'
     webbrowser.open_new_tab(filename)
 
-    while (True):
-        if (keyboard.is_pressed("p")):
-            break
+    while not keyboard.is_pressed("p"):
         cursor = get_hand_input()
         if (len(cursor) != 0):
             cursor = cursor[0]
