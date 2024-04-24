@@ -18,7 +18,7 @@ class MultiStateLife(GameOfLife):
     color3 = pygame.Color(31, 120, 180)
     color4 = pygame.Color(231, 41, 138)
 
-    def __init__(self, size_x, size_y, pixels_per_led, FPS, rules, neighbor_rules, threshold=3,rad=1):
+    def __init__(self, size_x, size_y, pixels_per_led, FPS, rules, neighbor_rules, threshold=3,radius=7):
         """ Rules should be give as
 
         rules = {1: [2], 2: [3, 4], ...}
@@ -36,7 +36,7 @@ class MultiStateLife(GameOfLife):
         self.setup_colors()
         self.threshold = threshold
         self.data_records = []
-        self.radius = rad
+        self.radius = radius
 
         super().__init__(size_x=size_x, size_y=size_y, B=[], S=[], nh=neighbor_rules, cell_size=pixels_per_led)
 
@@ -189,6 +189,7 @@ class MultiStateLife(GameOfLife):
         self.data_records.append(row)
 
         # update
+        print("radius = " + str(self.radius))
         hand_list = get_hand_input(self.radius)
         self.step += 1
         new_board = dict()

@@ -3,6 +3,10 @@ from cv_processor import cv_processor
 from game_of_life_sim import GameOfLife
 from multi_state_life_sim import MultiStateLife
 from magma_sim import MagmaSim
+import webbrowser
+import os
+import keyboard
+import pyautogui
 
 '''Thoughts here are that this script acts as the pygame interpreter, 
 and we have other scripts to control different ways to mess with the image.
@@ -17,7 +21,7 @@ FPS = 60    # base fps value, each game should have their own
 computer_vision = cv_processor(r"Visuals\weights\best.pt")
 computer_vision.start_cam(0)
 
-def get_hand_input(self, radius=1):
+def get_hand_input(radius=1):
     radius /= 2
     computer_vision.capture()
 
@@ -37,12 +41,13 @@ def get_hand_input(self, radius=1):
         for x in range(xmin, xmax):
             for y in range(ymin, ymax):
                 hand_list.append((x, y))
+    print(hand_list)
     return hand_list
 
 
 # Choose which sim we use
 game_select = numpy.random.randint(0,2) # inclusive
-game_select = 0
+game_select = 4
 
 # --- Basic Game of Life --- #
 if (game_select == 0):
@@ -64,6 +69,7 @@ elif (game_select == 1):
     threshold = 3
     radius = 7
     rules_select = numpy.random.randint(0,2) # inclusive
+    rules_select = 1
 
     if (rules_select == 0): # 3-state (normal Rock Paper Scissor)
         rules = {1: [2], 2: [0], 3: [1]}
@@ -72,7 +78,7 @@ elif (game_select == 1):
     else: # (rules_select==2): # 5-state (balanced)
         rules = {1: [4, 5], 2: [1, 5], 3: [1, 2], 4: [2, 3], 5: [3, 4]}
     game = MultiStateLife(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, FPS=FPS,
-                          neighbor_rules=nh, rules=rules, threshold=threshold, rad=radius)
+                          neighbor_rules=nh, rules=rules, threshold=threshold, radius=radius)
 
 # --- Magma Sim --- #
 elif (game_select == 2):
@@ -85,4 +91,22 @@ elif (game_select == 2):
     colormap = cmap_options[numpy.random.randint(0, len(cmap_options) - 1)]
     game = MagmaSim(size_x=WIDTH, size_y=HEIGHT, pixels_per_led=pixels_per_led, FPS=FPS, 
                     neighbor_rules=nh, delta_x=delta_x, starting_density=starting_density, cmap=colormap, rad=radius)
+    
+# --- Chris Shier's javascript visuals --- #
+else:
+    screen_width, screen_height = pyautogui.size()
+
+    js_select = numpy.random.randint(0, 2)
+    filename = 'file:///' + os.getcwd() + '/Visuals/' + 'csh_01.html'
+    webbrowser.open_new_tab(filename)
+
+    while (True):
+        if (keyboard.is_pressed("p")):
+            break
+        cursor = get_hand_input()
+        if (len(cursor) != 0):
+            cursor = cursor[0]
+            cursor_x = cursor[0] * screen_width / WIDTH
+            cursor_y = cursor[1] * screen_height / HEIGHT
+            pyautogui.moveTo(cursor_x, cursor_y, duration=.2)
     

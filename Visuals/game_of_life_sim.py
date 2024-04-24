@@ -105,6 +105,7 @@ class GameOfLife:
     def evolve(self, verbose):
         from sim_base import get_hand_input
         # update
+        print(self.radius)
         hand_list = get_hand_input(self.radius)
         self.step += 1
         to_birth = []
@@ -133,7 +134,7 @@ class GameOfLife:
             print(f'Step {self.step:6d},   density {100 * density:9.5f} %')
 
     def generate_random_board(self, density=0.5):
-        board = np.random.choice([0, 1], (self.size_x, self.size_y), p=[1-density, density])
+        #board = np.random.choice([0, 1], (self.size_x, self.size_y), p=[1-density, density])
         board = np.zeros((self.size_x, self.size_y))  # for testing purposes only
 
 
