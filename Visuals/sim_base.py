@@ -58,7 +58,7 @@ def choose_simulation():
     TIME = (int)(time.time())
     game_select = SIM_SELECTED
     while (game_select == SIM_SELECTED):
-        game_select = numpy.random.randint(0, 8) # inclusive, choose a different sim
+        game_select = numpy.random.randint(0, 5) # inclusive, choose a different sim
     
     #game_select = 0 # hard set for testing
     print("NEW GAME: " + str(game_select))
@@ -114,9 +114,7 @@ def choose_simulation():
         filename = 'file:///' + os.getcwd() + '/Visuals/' + 'csh_01.html'
         webbrowser.open_new_tab(filename)
 
-        while (True):
-            if (keyboard.is_pressed("p")):
-                break
+        while not (keyboard.is_pressed("p")):
             cursor = get_hand_input()
             if (len(cursor) != 0):
                 cursor = cursor[0]
