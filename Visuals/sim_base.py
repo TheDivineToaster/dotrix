@@ -16,7 +16,7 @@ like fluid sim or cellular automata'''
 
 # Constants
 WIDTH, HEIGHT = 60, 60 # number of "LEDs" on the screen
-pixels_per_led = 10
+pixels_per_led = 30
 FPS = 60    # base fps value, each game should have their own
 
 SIM_SELECTED = -1
@@ -28,7 +28,7 @@ computer_vision.start_cam(0)
 
 def get_hand_input(radius=1):
     global TIME, SIM_SWITCH_FREQUENCY
-    if time.time() > (TIME + SIM_SWITCH_FREQUENCY):
+    if (int)(time.time()) > (TIME + SIM_SWITCH_FREQUENCY):
         choose_simulation()
     radius /= 2
     computer_vision.capture()
@@ -122,7 +122,7 @@ def choose_simulation():
                 cursor = cursor[0]
                 cursor_x = cursor[0] * screen_width / WIDTH
                 cursor_y = cursor[1] * screen_height / HEIGHT
-                pyautogui.moveTo(cursor_x, cursor_y, duration=.2)
+                pyautogui.moveTo(cursor_x, cursor_y, duration=.05)
     SIM_SELECTED = game_select
     
 choose_simulation()
