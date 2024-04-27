@@ -23,11 +23,11 @@ SIM_SELECTED = -1
 SIM_SWITCH_FREQUENCY = 20
 TIME = 0
 
-computer_vision = cv_processor(r"Visuals\weights\best.pt")
+computer_vision = cv_processor(rf"{os.getcwd()}\Visuals\weights\best.pt")
 computer_vision.start_cam(0)
 
 def get_hand_input(radius=1):
-    global TIME, SIM_SWITCH_FREQUENCY
+    global TIME, SIM_SWITCH_FREQUENCY, WIDTH, HEIGHT, pixels_per_led
     if (int)(time.time()) > (TIME + SIM_SWITCH_FREQUENCY):
         choose_simulation()
     radius /= 2
@@ -115,14 +115,14 @@ def choose_simulation():
         webbrowser.open_new_tab(filename)
 
         while (True):
-            if (keyboard.is_pressed("p")): # exit function
+            if (keyboard.is_pressed("p")):
                 break
             cursor = get_hand_input()
             if (len(cursor) != 0):
                 cursor = cursor[0]
                 cursor_x = cursor[0] * screen_width / WIDTH
                 cursor_y = cursor[1] * screen_height / HEIGHT
-                pyautogui.moveTo(cursor_x, cursor_y, duration=.05)
+                pyautogui.moveTo(cursor_x, cursor_y, duration=.2)
     SIM_SELECTED = game_select
     
 choose_simulation()
