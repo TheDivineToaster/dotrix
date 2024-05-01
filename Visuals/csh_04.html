@@ -1,0 +1,198 @@
+<!-- HTML document uses Chris Shier's art projects at https://www.csh.bz/line/03.html -->
+<html><head>
+    <title>csh.bz - line</title>
+    <!-- chris shier, noisia@gmail.com, http://csh.bz -->
+    <!-- thank you: tim baker-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=0"/>  <meta name="apple-mobile-web-app-capable" content="yes" /> <meta name="apple-mobile-web-app-status-bar-style" content="black" /> <meta name="apple-touch-fullscreen" content="yes" />
+    <link rel="stylesheet" type="text/css" href="http://csh.bz/css/reset.css">
+    <link rel="icon" href="http://csh.bz/favicon.ico"/>
+    <link rel="image_src" href="http://csh.bz/line/0201.png" />
+    <meta property="og:image" content="http://csh.bz/line/0201.png" />
+    <style type="text/css">
+    body{background-color:black;}
+    canvas{background-color:black;}
+    </style>
+    
+    </head>
+    <body>
+    <canvas id="canvas" >try this in a browser that supports the canvas tag</canvas>
+    </body>
+    
+    <script type="text/javascript" src="./csh_04.js"></script>
+    
+    <script type="text/javascript">
+    
+    // old versions: line/01.html line/02.html line/index.html 
+    // todo: change line origin to screen center. saving. and a tomato and cheese sandwich. and a ripe plum. good morning. did you sleep well? i'm still confused from the flight. waking up at four in the morning. there's fruit in the fridge please eat it, you know how fast it can go fuzzy. i can't help myself when i'm at the store it all looks so good. maybe changing fillRect to clearRect might get me some more smoothness. 
+    
+    
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       || 
+              window.webkitRequestAnimationFrame || 
+              window.mozRequestAnimationFrame    || 
+              window.oRequestAnimationFrame      || 
+              window.msRequestAnimationFrame     || 
+              function(/* function */ callback, /* DOMElement */ element){
+                window.setTimeout(callback, 1000 / 60);
+              };
+    })();
+    
+    Mouse = {x: -1, y: -1, xA:[cw/2], yA:[ch/2], up: true, clicks:0};
+    
+    Mouse.events = {};
+    Mouse.events.move = function(e){
+      // ios
+      if ("touches" in e) e = e.touches[0];
+      //http://code.google.com/p/chromium/issues/detail?id=5598
+      if (e.pageX === Mouse.x && e.pageY === Mouse.y) return;
+      Mouse.x = e.pageX;
+      Mouse.y = e.pageY;
+    };
+    
+    Mouse.path = [];
+    Mouse.path.x = [];
+    Mouse.path.y = [];
+    Mouse.path.capture = function(){
+      Mouse.path.x.unshift([Mouse.x]);
+      Mouse.path.y.unshift([Mouse.y]);
+      while (Mouse.path.x.length > 1000){
+        Mouse.path.x.pop();
+        Mouse.path.y.pop();
+      }
+    }
+    pos = [];
+    Mouse.avg = function(a, followSpeed, x, y){
+    
+      if(!Array.isArray(pos[a])) pos[a] = [Mouse.x,Mouse.y];
+    
+      if ( x > pos[a][0] ) {
+        pos[a][0] += (x - pos[a][0])/followSpeed;
+      } else if ( x < pos[a][0]) {
+        pos[a][0] -= (pos[a][0] - x)/followSpeed;
+      } else {
+        pos[a][0] += 0;
+      }
+      if ( y > pos[a][1] ) {
+        pos[a][1] += (y - pos[a][1])/followSpeed;
+      } else if ( y < pos[a][1]) {
+        pos[a][1] -= (pos[a][1] - y)/followSpeed;
+      } else {
+        pos[a][1] += 0;
+      }
+      Mouse.xA[a] = pos[a][0];
+      Mouse.yA[a] = pos[a][1];
+    }
+    
+    Mouse.events.up = function(e){
+      Mouse.down = false;
+      Mouse.up = true;
+    }
+    
+    Mouse.events.down = function(e){
+      // ios
+      if ("touches" in e) {
+        e.preventDefault();
+        e = e.touches[0];
+      };
+      Mouse.down = true;
+      Mouse.up = false;
+      Mouse.clicks =+ 1;
+    }
+    
+    var time = 0;
+    function timer(){
+      time += 1;
+    }
+    
+    function clearCanvas(alpha){
+      ctx.fillStyle = "hsla(0,0%,0%," + alpha + ")";
+      ctx.fillRect(0, 0, cw, ch);
+    }
+    clearCanvas(1);
+    
+    function fade(){
+      clearCanvas(0.1);
+    }
+    
+    function square(x,y, size, color, i){
+      ctx.save();
+      ctx.translate(x,y);
+      ctx.fillStyle = color;
+      ctx.fillRect( -size/2, -size/2, size, size );
+      ctx.restore();
+    }
+    
+    function ribbon(){
+      for (i = 1; i < 180; i++){
+        var hue = time - (i * 2);
+            size = i ; 
+            light = (Math.sin(i/4)+1) * 50
+            color = "hsla("  + (-time+i*2) +",100%," + light +"%,0.1)",
+            followSpeed = 3 + (i/1000);
+        square(Mouse.xA[i], Mouse.yA[i], size, color, i);
+        Mouse.avg(i+1, followSpeed, Mouse.xA[i], Mouse.yA[i]);
+      }
+    }
+    
+    function line(){
+      ctx.beginPath();
+      for(i = 0; i < 240; i++){
+      if (Mouse.down == true){
+        ctx.strokeStyle = "hsla(" + (time/24) + ",100%," + 50 + "%," + 0.0 + ")";
+      } else {
+    
+        ctx.strokeStyle = "hsla(" + (time/24) + ",100%," + 50 + "%," + 0.1 + ")";//"hsla(0,0%,100%,0.2)"; // "white";  //((Math.sin( time/800 )+1)*50)
+      }
+        ctx.moveTo(Mouse.xA[i-1],Mouse.yA[i-1]);
+        ctx.lineTo(Mouse.xA[i],Mouse.yA[i]);
+        Mouse.avg(i+1, 2, Mouse.xA[i], Mouse.yA[i]);
+      };
+      ctx.stroke();
+    }
+    
+    function wipe(){
+      h = time/4 % ch;
+      v = time/3 % cw;
+      ctx.fillStyle = "hsla(0,0%,0%,0.33)" ;
+      ctx.fillRect(0,ch-h,cw,1);
+      ctx.fillRect(cw-v,0,1,ch);
+    }
+    
+    function animloop(){
+      if (Mouse.down){clearCanvas(0.1)}
+      timer();
+      if (Mouse.x !== -1 && Mouse.y !== -1) {
+        Mouse.avg(0, 1, Mouse.x , Mouse.y);
+        line();
+      }
+      requestAnimFrame(animloop);
+    };
+    animloop();
+    
+    document.addEventListener("mousemove", Mouse.events.move);
+    document.addEventListener("touchmove", Mouse.events.move);
+    
+    document.addEventListener("mousedown", Mouse.events.down);
+    document.addEventListener("touchstart", Mouse.events.down);
+    
+    document.addEventListener("touchend", Mouse.events.up);
+    document.addEventListener("mouseup", Mouse.events.up);
+    
+    window.top.scrollTo(0, 1);
+    </script>
+    
+    <script type="text/javascript">
+    
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-3889624-4']);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    
+    </script>
+    
+    </html>

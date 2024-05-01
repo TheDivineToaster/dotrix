@@ -15,7 +15,7 @@ like fluid sim or cellular automata'''
 
 
 # Constants
-WIDTH, HEIGHT = 60, 60 # number of "LEDs" on the screen
+WIDTH, HEIGHT = 100, 65 # number of "LEDs" on the screen
 pixels_per_led = 30
 FPS = 60    # base fps value, each game should have their own
 
@@ -54,13 +54,14 @@ def get_hand_input(radius=1):
 
 
 def choose_simulation():
+    pyautogui.hotkey('ctrl','w') # close tab if a javascript sim was playing
     global TIME, SIM_SELECTED, WIDTH, HEIGHT, FPS, pixels_per_led
     TIME = (int)(time.time())
     game_select = SIM_SELECTED
     while (game_select == SIM_SELECTED):
-        game_select = numpy.random.randint(0, 5) # inclusive, choose a different sim
+        game_select = numpy.random.randint(0, 6) # inclusive, choose a different sim
     
-    #game_select = 0 # hard set for testing
+    game_select = 0 # hard set for testing
     print("NEW GAME: " + str(game_select))
 
     # --- Basic Game of Life --- #
@@ -110,11 +111,11 @@ def choose_simulation():
     else:
         screen_width, screen_height = pyautogui.size()
 
-        js_select = numpy.random.randint(0, 2)
-        filename = 'file:///' + os.getcwd() + '/Visuals/' + 'csh_01.html'
+        game_select -= 2
+        filename = 'file:///' + os.getcwd() + '/Visuals/' + 'csh_0' + str(game_select) + '.html'
         webbrowser.open_new_tab(filename)
 
-        while not (keyboard.is_pressed("p")):
+        while not (keyboard.is_pressed('p')):
             cursor = get_hand_input()
             if (len(cursor) != 0):
                 cursor = cursor[0]
